@@ -7,10 +7,13 @@ import os
 
 app = FastAPI(title="Couple Diary API")
 
-# CORS 설정 - 환경변수에서 가져오기
-cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
-# 빈 문자열 제거
-cors_origins = [origin.strip() for origin in cors_origins if origin.strip()]
+# CORS 설정 - 로컬과 프로덕션 URL 모두 포함
+cors_origins = ["http://localhost:5173"]  # 로컬 개발용 항상 포함
+
+# 프로덕션 프론트엔드 URL 추가
+frontend_url = os.getenv("FRONTEND_URL", "").strip()
+if frontend_url:
+    cors_origins.append(frontend_url)
 
 app.add_middleware(
     CORSMiddleware,

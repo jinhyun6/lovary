@@ -57,7 +57,7 @@ jobs:
           --set-env-vars "SECRET_KEY=${{ secrets.SECRET_KEY }}" \
           --set-env-vars "ALGORITHM=HS256" \
           --set-env-vars "ACCESS_TOKEN_EXPIRE_MINUTES=10080" \
-          --set-env-vars "CORS_ORIGINS=${{ secrets.CORS_ORIGINS }}" \
+          --set-env-vars "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" \
           --max-instances 10 \
           --min-instances 0 \
           --memory 512Mi \
@@ -78,4 +78,4 @@ jobs:
         echo ""
         echo "📝 Next steps:"
         echo "1. Update VITE_API_URL in Vercel to: ${{ env.SERVICE_URL }}"
-        echo "2. Add ${{ secrets.FRONTEND_URL }} to CORS_ORIGINS if not already added"
+        echo "2. Make sure FRONTEND_URL is set correctly in GitHub Secrets"

@@ -40,11 +40,7 @@
   ```bash
   openssl rand -hex 32
   ```
-- `CORS_ORIGINS`: 허용할 프론트엔드 URL (쉼표로 구분)
-  ```
-  https://your-app.vercel.app,http://localhost:5173
-  ```
-- `FRONTEND_URL`: Vercel 프론트엔드 URL
+- `FRONTEND_URL`: Vercel 프론트엔드 URL (배포 후 설정)
 
 ### 2. GCP 설정
 
@@ -82,7 +78,7 @@ Vercel 대시보드에서 다음 환경 변수를 설정하세요:
 
 1. Cloud Run 서비스 URL 확인
 2. Vercel 환경 변수에 `VITE_API_URL` 업데이트
-3. 필요시 Cloud Run의 CORS_ORIGINS 환경 변수 업데이트
+3. GitHub Secrets에 `FRONTEND_URL` 업데이트 (Vercel URL)
 
 ## 로컬 개발
 
@@ -116,7 +112,7 @@ Vercel 대시보드에서 다음 환경 변수를 설정하세요:
 - `SECRET_KEY`: JWT 서명 키
 - `ALGORITHM`: JWT 알고리즘 (HS256)
 - `ACCESS_TOKEN_EXPIRE_MINUTES`: 토큰 만료 시간
-- `CORS_ORIGINS`: 허용할 프론트엔드 URL
+- `FRONTEND_URL`: 프로덕션 프론트엔드 URL
 - `PORT`: 서버 포트 (Cloud Run 자동 설정)
 
 ### Frontend
