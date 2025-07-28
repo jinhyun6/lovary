@@ -5,6 +5,7 @@ export interface User {
   email: string
   name?: string
   partner_id?: number
+  partner?: User
   reminder_time?: string
   created_at: string
 }
