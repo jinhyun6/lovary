@@ -10,9 +10,9 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  SERVICE_NAME: couple-diary-backend
+  SERVICE_NAME: lovary-backend
   REGION: ${{ secrets.GCP_REGION }}
-  REPOSITORY: couple-diary-images
+  REPOSITORY: lovary-images
 
 jobs:
   deploy:
