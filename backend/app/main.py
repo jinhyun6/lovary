@@ -8,11 +8,14 @@ import os
 app = FastAPI(title="Couple Diary API")
 
 # CORS 설정 - 로컬과 프로덕션 URL 모두 포함
-cors_origins = ["http://localhost:5173"]  # 로컬 개발용 항상 포함
+cors_origins = [
+    "http://localhost:5173",  # 로컬 개발용
+    "https://lovary.vercel.app"  # 프로덕션 (임시 하드코딩)
+]
 
-# 프로덕션 프론트엔드 URL 추가
+# 프로덕션 프론트엔드 URL 추가 (환경변수)
 frontend_url = os.getenv("FRONTEND_URL", "").strip()
-if frontend_url:
+if frontend_url and frontend_url not in cors_origins:
     cors_origins.append(frontend_url)
 
 app.add_middleware(
