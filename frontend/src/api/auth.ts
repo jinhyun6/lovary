@@ -22,12 +22,23 @@ export const authApi = {
     formData.append('username', data.username)
     formData.append('password', data.password)
     
-    const response = await apiClient.post<AuthResponse>('/api/auth/login', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+    console.log('Login request data:', {
+      username: data.username,
+      password: '***' // masked for security
     })
-    return response.data
+    
+    try {
+      const response = await apiClient.post<AuthResponse>('/api/auth/login', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      console.log('Login response:', response.data)
+      return response.data
+    } catch (error: any) {
+      console.error('Login API error:', error.response?.data)
+      throw error
+    }
   },
 
   async register(data: RegisterRequest) {

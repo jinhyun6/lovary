@@ -45,19 +45,25 @@ def root():
 def health_check():
     from app.db.database import SessionLocal
     from app.models.user import User
+    from sqlalchemy import text
     try:
         # Test database connection
         db = SessionLocal()
-        db.execute("SELECT 1")
+        db.execute(text("SELECT 1"))
         
         # Count users
         user_count = db.query(User).count()
+        
+        # Get first user email for debugging (masked)
+        first_user = db.query(User).first()
+        first_user_email = first_user.email[:3] + "***" if first_user else "No users"
         
         db.close()
         return {
             "status": "healthy", 
             "database": "connected",
             "user_count": user_count,
+            "first_user_email": first_user_email,
             "database_url": os.getenv("DATABASE_URL", "").split("@")[-1] if "@" in os.getenv("DATABASE_URL", "") else "not set"
         }
     except Exception as e:
