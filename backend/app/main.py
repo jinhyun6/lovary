@@ -40,3 +40,25 @@ app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 @app.get("/")
 def root():
     return {"message": "Lovary API"}
+
+@app.get("/health")
+def health_check():
+    from app.db.database import SessionLocal
+    from app.models.user import User
+    try:
+        # Test database connection
+        db = SessionLocal()
+        db.execute("SELECT 1")
+        
+        # Count users
+        user_count = db.query(User).count()
+        
+        db.close()
+        return {
+            "status": "healthy", 
+            "database": "connected",
+            "user_count": user_count,
+            "database_url": os.getenv("DATABASE_URL", "").split("@")[-1] if "@" in os.getenv("DATABASE_URL", "") else "not set"
+        }
+    except Exception as e:
+        return {"status": "unhealthy", "database": "error", "detail": str(e)}

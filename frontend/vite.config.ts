@@ -13,5 +13,18 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vue-vendor': ['vue', 'vue-router'],
+          'auth-views': [
+            './src/views/LoginView.vue',
+            './src/views/RegisterView.vue'
+          ]
+        }
+      }
+    }
   }
 })
