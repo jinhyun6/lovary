@@ -62,7 +62,7 @@
       <div v-if="!monthlyPhoto" class="mb-12 text-center">
         <div 
           class="inline-flex flex-col items-center space-y-4 p-8 bg-white rounded-2xl shadow-sm transition-all"
-          :class="{ 'ring-4 ring-blue-400 ring-opacity-50 bg-blue-50': isDragging }"
+          :class="{ 'ring-4 ring-gray-300 ring-opacity-50 bg-gray-50': isDragging }"
           @dragover.prevent="handleDragOver"
           @dragleave.prevent="handleDragLeave"
           @drop.prevent="handleDrop"
@@ -74,7 +74,7 @@
             {{ isDragging ? 'Drop your photo here' : 'Drag & drop a photo or click to select' }}
           </p>
           <label class="relative group cursor-pointer">
-            <span class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-xl inline-block group-hover:shadow-lg transition-all transform group-hover:-translate-y-0.5">
+            <span class="px-6 py-3 bg-gray-800 text-white font-medium rounded-xl inline-block group-hover:bg-gray-900 transition-colors">
               Upload Photo
             </span>
             <input 

@@ -17,7 +17,7 @@
               v-model="name"
               type="text"
               required
-              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent transition-all"
               placeholder="Your name"
             />
           </div>
@@ -30,7 +30,7 @@
               v-model="email"
               type="email"
               required
-              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent transition-all"
               placeholder="your@email.com"
             />
           </div>
@@ -44,7 +44,7 @@
               type="password"
               required
               minlength="6"
-              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent transition-all"
               placeholder="••••••••"
             />
           </div>
@@ -52,7 +52,7 @@
           <button
             type="submit"
             :disabled="isLoading"
-            class="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-xl hover:shadow-lg transition-all transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full px-6 py-3 bg-gray-800 text-white font-medium rounded-xl hover:bg-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {{ isLoading ? 'Creating account...' : 'Sign up' }}
           </button>
@@ -63,7 +63,7 @@
         <div class="mt-8 pt-8 border-t border-gray-100">
           <p class="text-center text-sm text-gray-600">
             Already have an account?
-            <router-link to="/login" class="text-blue-600 hover:text-blue-700 font-medium">
+            <router-link to="/login" class="text-gray-800 hover:text-gray-900 font-medium">
               Login
             </router-link>
           </p>
