@@ -1,0 +1,81 @@
+name: Deploy Backend to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-backend.yml'
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  SERVICE_NAME: couple-diary-backend
+  REGION: ${{ secrets.GCP_REGION }}
+  REPOSITORY: couple-diary-images
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        version: 'latest'
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Configure Docker for Artifact Registry
+      run: |
+        gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+    - name: Build Docker image
+      run: |
+        docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+          -f backend/Dockerfile.prod \
+          backend/
+
+    - name: Push Docker image to Artifact Registry
+      run: |
+        docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy ${{ env.SERVICE_NAME }} \
+          --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+          --region ${{ env.REGION }} \
+          --platform managed \
+          --allow-unauthenticated \
+          --set-env-vars "DATABASE_URL=${{ secrets.DATABASE_URL }}" \
+          --set-env-vars "SECRET_KEY=${{ secrets.SECRET_KEY }}" \
+          --set-env-vars "ALGORITHM=HS256" \
+          --set-env-vars "ACCESS_TOKEN_EXPIRE_MINUTES=10080" \
+          --set-env-vars "CORS_ORIGINS=${{ secrets.CORS_ORIGINS }}" \
+          --max-instances 10 \
+          --min-instances 0 \
+          --memory 512Mi \
+          --cpu 1 \
+          --timeout 300 \
+          --concurrency 80
+
+    - name: Get Service URL
+      run: |
+        SERVICE_URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} --region ${{ env.REGION }} --format 'value(status.url)')
+        echo "Service deployed at: $SERVICE_URL"
+        echo "SERVICE_URL=$SERVICE_URL" >> $GITHUB_ENV
+
+    - name: Show deployment info
+      run: |
+        echo "✅ Backend deployed successfully!"
+        echo "🔗 Service URL: ${{ env.SERVICE_URL }}"
+        echo ""
+        echo "📝 Next steps:"
+        echo "1. Update VITE_API_URL in Vercel to: ${{ env.SERVICE_URL }}"
+        echo "2. Add ${{ secrets.FRONTEND_URL }} to CORS_ORIGINS if not already added"
