@@ -102,7 +102,17 @@ const handleRegister = async () => {
     // Auto login after register
     const response = await authApi.login({ username: email.value, password: password.value })
     localStorage.setItem('token', response.access_token)
-    router.push('/diary')
+    
+    // 로그인과 동일한 네비게이션 패턴 사용
+    await new Promise(resolve => setTimeout(resolve, 100))
+    await router.push('/diary')
+    
+    // 추가 안전장치
+    setTimeout(() => {
+      if (window.location.pathname === '/register') {
+        window.location.href = '/diary'
+      }
+    }, 1000)
   } catch (err: any) {
     error.value = err.response?.data?.detail || 'Registration failed. Please try again.'
   } finally {

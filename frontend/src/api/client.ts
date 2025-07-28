@@ -18,12 +18,22 @@ apiClient.interceptors.request.use((config) => {
 })
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('API Response interceptor - success:', response.config.url)
+    return response
+  },
   (error) => {
+    console.log('API Response interceptor - error:', {
+      url: error.config?.url,
+      status: error.response?.status,
+      currentPath: window.location.pathname
+    })
+    
     if (error.response?.status === 401) {
       // 로그인 페이지에서는 리다이렉트하지 않음
       const currentPath = window.location.pathname
       if (currentPath !== '/login' && currentPath !== '/register') {
+        console.log('401 error - removing token and redirecting to login')
         localStorage.removeItem('token')
         window.location.href = '/login'
       }

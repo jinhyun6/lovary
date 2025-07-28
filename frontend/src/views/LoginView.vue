@@ -79,23 +79,35 @@ const handleLogin = async () => {
   isLoading.value = true
   
   try {
+    console.log('Starting login process...')
     const response = await authApi.login({ username: email.value, password: password.value })
-    console.log('Login successful, token received:', !!response.access_token)
+    console.log('Login API response:', response)
+    console.log('Token received:', !!response.access_token)
     
     localStorage.setItem('token', response.access_token)
     const savedToken = localStorage.getItem('token')
-    console.log('Token saved to localStorage:', !!savedToken)
+    console.log('Token saved to localStorage:', savedToken)
+    console.log('Current URL before navigation:', window.location.href)
+    console.log('Router current route:', router.currentRoute.value.path)
     
-    // 프로덕션에서 더 확실한 네비게이션을 위해 replace 사용
-    await router.replace('/diary')
-    console.log('Navigation to /diary completed')
+    // 네비게이션 전에 약간의 지연 추가
+    await new Promise(resolve => setTimeout(resolve, 100))
     
-    // 추가 안전장치: 만약 여전히 로그인 페이지에 있다면 강제 리로드
+    console.log('Attempting navigation to /diary...')
+    await router.push('/diary')
+    console.log('Router.push completed')
+    console.log('Current URL after navigation:', window.location.href)
+    console.log('Router current route after nav:', router.currentRoute.value.path)
+    
+    // 추가 안전장치: 네비게이션이 실패한 경우 직접 리다이렉트
     setTimeout(() => {
-      if (window.location.pathname === '/login') {
+      console.log('Checking navigation result...')
+      console.log('Current pathname:', window.location.pathname)
+      if (window.location.pathname === '/login' || window.location.pathname === '/') {
+        console.log('Navigation failed, forcing redirect to /diary')
         window.location.href = '/diary'
       }
-    }, 500)
+    }, 1000)
   } catch (err: any) {
     console.error('Login error:', err)
     error.value = err.response?.data?.detail || 'Login failed. Please try again.'

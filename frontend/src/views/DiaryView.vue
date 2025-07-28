@@ -326,6 +326,8 @@ const handleCrop = async (blob: Blob) => {
 }
 
 onMounted(() => {
+  console.log('DiaryView mounted - token:', localStorage.getItem('token')?.substring(0, 20) + '...')
+  console.log('Current URL:', window.location.href)
   loadMonthlyPhoto()
   loadAnniversaries()
 })
