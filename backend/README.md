@@ -1,6 +1,6 @@
 # Lovary Backend
 
-FastAPI backend for Lovary - Couple Diary App
+FastAPI backend for Lovary - Daily moments with your loved one
 
 ## Deploy Test
 Triggering GitHub Actions workflow - 2024

@@ -1,6 +1,6 @@
 # Lovary Frontend
 
-Vue 3 + TypeScript frontend for Lovary - Couple Diary App
+Vue 3 + TypeScript frontend for Lovary - Daily moments with your loved one
 
 Built with love 💕
 

@@ -3,7 +3,7 @@
     <div class="container mx-auto px-6 py-12 flex flex-col items-center justify-center min-h-screen">
       <div class="text-center mb-12">
         <h1 class="text-5xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-4">
-          Couple Diary
+          Lovary
         </h1>
         <p class="text-lg text-gray-600">Share your daily moments with your loved one</p>
       </div>
@@ -12,13 +12,13 @@
         <div class="space-y-4">
           <router-link 
             to="/login" 
-            class="block w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-center font-medium rounded-xl hover:shadow-lg transition-all transform hover:-translate-y-0.5"
+            class="block w-full px-6 py-3 bg-gray-800 text-white text-center font-medium rounded-xl hover:bg-gray-900 transition-colors"
           >
             Login
           </router-link>
           <router-link 
             to="/register" 
-            class="block w-full px-6 py-3 bg-white border-2 border-gray-200 text-gray-700 text-center font-medium rounded-xl hover:border-gray-300 hover:shadow-md transition-all"
+            class="block w-full px-6 py-3 bg-white border-2 border-gray-200 text-gray-700 text-center font-medium rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-all"
           >
             Create Account
           </router-link>

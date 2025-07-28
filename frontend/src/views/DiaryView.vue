@@ -4,7 +4,7 @@
     <nav class="bg-white/80 backdrop-blur-md border-b border-gray-100">
       <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
         <h1 class="text-2xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-          Couple Diary
+          Lovary
         </h1>
         <div class="flex items-center space-x-6">
           <router-link 

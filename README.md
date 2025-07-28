@@ -1,4 +1,4 @@
-# Couple Diary App
+# Lovary
 
 커플을 위한 일기 공유 애플리케이션
 
@@ -51,10 +51,10 @@
 
 2. **Artifact Registry 저장소 생성**:
    ```bash
-   gcloud artifacts repositories create couple-diary-images \
+   gcloud artifacts repositories create lovary-images \
      --repository-format=docker \
      --location=asia-northeast3 \
-     --description="Docker images for couple diary app"
+     --description="Docker images for Lovary app"
    ```
 
 3. **서비스 계정 권한**:

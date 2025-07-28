@@ -5,7 +5,7 @@ from app.api import auth, diary, users, photos, anniversary
 from app.core.config import settings
 import os
 
-app = FastAPI(title="Couple Diary API")
+app = FastAPI(title="Lovary API")
 
 # CORS 설정 - 로컬과 프로덕션 URL 모두 포함
 cors_origins = [
@@ -39,4 +39,4 @@ app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 
 @app.get("/")
 def root():
-    return {"message": "Couple Diary API"}
+    return {"message": "Lovary API"}
