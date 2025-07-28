@@ -81,7 +81,10 @@ const handleLogin = async () => {
   try {
     const response = await authApi.login({ username: email.value, password: password.value })
     localStorage.setItem('token', response.access_token)
-    router.push('/diary')
+    // 토큰 저장 후 약간의 딜레이를 주고 페이지 이동
+    setTimeout(() => {
+      router.push('/diary')
+    }, 100)
   } catch (err: any) {
     error.value = err.response?.data?.detail || 'Login failed. Please try again.'
   } finally {
