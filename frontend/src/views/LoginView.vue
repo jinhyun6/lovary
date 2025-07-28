@@ -80,12 +80,24 @@ const handleLogin = async () => {
   
   try {
     const response = await authApi.login({ username: email.value, password: password.value })
+    console.log('Login successful, token received:', !!response.access_token)
+    
     localStorage.setItem('token', response.access_token)
-    // 토큰 저장 후 약간의 딜레이를 주고 페이지 이동
+    const savedToken = localStorage.getItem('token')
+    console.log('Token saved to localStorage:', !!savedToken)
+    
+    // 프로덕션에서 더 확실한 네비게이션을 위해 replace 사용
+    await router.replace('/diary')
+    console.log('Navigation to /diary completed')
+    
+    // 추가 안전장치: 만약 여전히 로그인 페이지에 있다면 강제 리로드
     setTimeout(() => {
-      router.push('/diary')
-    }, 100)
+      if (window.location.pathname === '/login') {
+        window.location.href = '/diary'
+      }
+    }, 500)
   } catch (err: any) {
+    console.error('Login error:', err)
     error.value = err.response?.data?.detail || 'Login failed. Please try again.'
   } finally {
     isLoading.value = false

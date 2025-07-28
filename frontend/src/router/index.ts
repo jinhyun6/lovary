@@ -35,10 +35,23 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('token')
+  const token = localStorage.getItem('token')
+  const isAuthenticated = !!token
+  
+  console.log('Router guard:', {
+    to: to.path,
+    from: from.path,
+    isAuthenticated,
+    requiresAuth: to.meta.requiresAuth
+  })
   
   if (to.meta.requiresAuth && !isAuthenticated) {
+    console.log('Redirecting to login - no auth')
     next('/login')
+  } else if (to.path === '/login' && isAuthenticated) {
+    // 이미 로그인된 상태에서 로그인 페이지 접근 시 diary로 리다이렉트
+    console.log('Already authenticated, redirecting to diary')
+    next('/diary')
   } else {
     next()
   }
