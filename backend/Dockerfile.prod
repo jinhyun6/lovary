@@ -22,9 +22,6 @@ COPY . .
 # 실행 권한 부여
 RUN chmod +x startup.sh
 
-# uploads 디렉토리 생성
-RUN mkdir -p uploads
-
 # Cloud Run은 PORT 환경변수를 자동으로 설정
 # 기본값은 8080이지만 startup.sh에서 처리
 

@@ -13,6 +13,7 @@ env:
   SERVICE_NAME: lovary-backend
   REGION: ${{ secrets.GCP_REGION }}
   REPOSITORY: lovary-images
+  FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
 
 jobs:
   deploy:
