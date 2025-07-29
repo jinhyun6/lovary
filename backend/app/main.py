@@ -64,7 +64,8 @@ def health_check():
             "database": "connected",
             "user_count": user_count,
             "first_user_email": first_user_email,
-            "database_url": os.getenv("DATABASE_URL", "").split("@")[-1] if "@" in os.getenv("DATABASE_URL", "") else "not set"
+            "database_url": os.getenv("DATABASE_URL", "").split("@")[-1] if "@" in os.getenv("DATABASE_URL", "") else "not set",
+            "supabase_configured": bool(os.getenv("SUPABASE_URL") and os.getenv("SUPABASE_KEY"))
         }
     except Exception as e:
         return {"status": "unhealthy", "database": "error", "detail": str(e)}
