@@ -16,4 +16,5 @@ pywebpush==1.14.0
 apscheduler==3.10.4
 aiofiles==23.2.1
 requests==2.31.0
-supabase==2.3.0
+supabase==2.4.1
+httpx==0.25.2
