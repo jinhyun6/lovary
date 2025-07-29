@@ -18,12 +18,16 @@ frontend_url = os.getenv("FRONTEND_URL", "").strip()
 if frontend_url and frontend_url not in cors_origins:
     cors_origins.append(frontend_url)
 
+# Log CORS origins for debugging
+print(f"CORS origins: {cors_origins}")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])

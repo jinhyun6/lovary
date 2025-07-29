@@ -166,6 +166,9 @@ def get_monthly_photo(
         else:
             # It's a local path, convert to full URL
             base_url = str(request.base_url).rstrip('/')
+            # Force HTTPS in production
+            if base_url.startswith("http://") and not base_url.startswith("http://localhost"):
+                base_url = base_url.replace("http://", "https://")
             photo_url = f"{base_url}{photo.photo_url}"
         
         photo_dict = {
