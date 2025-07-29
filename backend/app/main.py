@@ -10,7 +10,7 @@ app = FastAPI(title="Lovary API")
 cors_origins = ["http://localhost:5173"]
 
 # 프로덕션 프론트엔드 URL 추가 (환경변수)
-frontend_url = os.getenv("FRONTEND_URL", "").strip()
+frontend_url = os.getenv("FRONTEND_URL", "").strip().rstrip('/')
 if frontend_url:
     cors_origins.append(frontend_url)
 
