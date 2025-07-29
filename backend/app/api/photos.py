@@ -51,6 +51,7 @@ async def upload_monthly_photo(
     
     # Try to use Supabase Storage first
     supabase = get_supabase_client()
+    print(f"Supabase client created: {supabase is not None}")
     if supabase:
         try:
             # If photo exists, delete the old file
@@ -84,7 +85,9 @@ async def upload_monthly_photo(
             photo_url = supabase.storage.from_("photos").get_public_url(file_path)
             
         except Exception as e:
+            import traceback
             print(f"Supabase storage error: {str(e)}")
+            print(f"Full traceback:\n{traceback.format_exc()}")
             # Fall back to local storage
             photo_url = await save_to_local_storage(couple_id, year, month, file, content, existing_photo, db)
     else:
