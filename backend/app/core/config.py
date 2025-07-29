@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080
     VAPID_PRIVATE_KEY: Optional[str] = None
     VAPID_PUBLIC_KEY: Optional[str] = None
+    SUPABASE_URL: Optional[str] = None
+    SUPABASE_KEY: Optional[str] = None
 
     class Config:
         env_file = ".env"
