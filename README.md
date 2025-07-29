@@ -41,6 +41,8 @@
   openssl rand -hex 32
   ```
 - `FRONTEND_URL`: Vercel 프론트엔드 URL (배포 후 설정)
+- `SUPABASE_URL`: Supabase 프로젝트 URL (예: https://xxx.supabase.co)
+- `SUPABASE_KEY`: Supabase anon/public key
 
 ### 2. GCP 설정
 
