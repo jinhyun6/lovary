@@ -33,7 +33,7 @@
         </button>
         <button
           @click="apply"
-          class="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all transform hover:-translate-y-0.5"
+          class="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors"
         >
           Apply
         </button>

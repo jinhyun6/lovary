@@ -535,7 +535,7 @@ watch(() => props.isOpen, (newVal) => {
 }
 
 .submit-button {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  background: #1f2937;
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -544,19 +544,16 @@ watch(() => props.isOpen, (newVal) => {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
   align-self: flex-end;
 }
 
 .submit-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+  background: #111827;
 }
 
 .submit-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  transform: none;
 }
 
 .edit-button {
