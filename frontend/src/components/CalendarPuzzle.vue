@@ -37,7 +37,7 @@
           <!-- Future dates - minimalist pattern -->
           <div v-if="cell.status === 'future'" class="puzzle-back">
             <div class="future-pattern">
-              <div class="heart-icon"></div>
+              <img src="/heart-music-icon.png" alt="" class="heart-music-icon" />
             </div>
           </div>
           
@@ -314,58 +314,13 @@ watch(() => props.photoUrl, () => {
   justify-content: center;
 }
 
-/* Floating circles - static */
-.future-pattern::before,
-.future-pattern::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-}
-
-.future-pattern::before {
-  width: 45%;
-  height: 45%;
-  background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, transparent 65%);
-  top: 15%;
-  left: 10%;
-}
-
-.future-pattern::after {
-  width: 45%;
-  height: 45%;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 65%);
-  bottom: 15%;
-  right: 10%;
-}
-
-/* Center heart design - static */
-.future-pattern > .heart-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 30px;
-  height: 27px;
-}
-
-.heart-icon::before,
-.heart-icon::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  width: 16px;
-  height: 24px;
-  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
-  border-radius: 16px 16px 0 0;
-  transform: rotate(-45deg);
-  transform-origin: 0 100%;
-  opacity: 0.3;
-}
-
-.heart-icon::after {
-  left: 16px;
-  transform: rotate(45deg);
-  transform-origin: 100% 100%;
+/* Heart music icon image */
+.heart-music-icon {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+  opacity: 0.85;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .photo-piece {
