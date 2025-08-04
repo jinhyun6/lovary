@@ -1,8 +1,17 @@
 import { apiClient } from './client'
 
+export interface DiaryPhoto {
+  id: number
+  diary_id: number
+  photo_url: string
+  original_filename?: string
+  created_at: string
+}
+
 export interface DiaryCreate {
   title: string
   content: string
+  photos?: File[]
 }
 
 export interface Diary {
@@ -12,11 +21,26 @@ export interface Diary {
   author_id: number
   created_at: string
   is_read_by_partner: boolean
+  photos?: DiaryPhoto[]
 }
 
 export const diaryApi = {
   async createDiary(data: DiaryCreate): Promise<Diary> {
-    const response = await apiClient.post<Diary>('/api/diary/', data)
+    const formData = new FormData()
+    formData.append('title', data.title)
+    formData.append('content', data.content)
+    
+    if (data.photos) {
+      data.photos.forEach(photo => {
+        formData.append('photos', photo)
+      })
+    }
+    
+    const response = await apiClient.post<Diary>('/api/diary/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
     return response.data
   },
 

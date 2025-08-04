@@ -64,6 +64,20 @@
         </div>
         <div class="diary-full-content">
           <p>{{ selectedDiary.content }}</p>
+          
+          <!-- Display photos if available -->
+          <div v-if="selectedDiary.photos && selectedDiary.photos.length > 0" class="diary-photos">
+            <div class="diary-photo-grid">
+              <img 
+                v-for="photo in selectedDiary.photos" 
+                :key="photo.id"
+                :src="photo.photo_url"
+                :alt="photo.original_filename || 'Diary photo'"
+                class="diary-photo"
+                @click="openPhotoModal(photo.photo_url)"
+              />
+            </div>
+          </div>
         </div>
         <!-- Edit button for own diary if within edit time -->
         <button 
@@ -95,9 +109,36 @@
             v-model="newDiary.content"
             placeholder="오늘은 어떤 하루였나요?"
             required
-            rows="20"
+            rows="15"
             class="diary-textarea"
           ></textarea>
+          
+          <!-- Photo Upload Section -->
+          <div class="photo-upload-section">
+            <label for="photo-upload" class="photo-upload-label">
+              <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>사진 추가 (최대 5장)</span>
+              <input
+                id="photo-upload"
+                type="file"
+                multiple
+                accept="image/*"
+                @change="handlePhotoSelect"
+                class="hidden-input"
+              />
+            </label>
+            
+            <!-- Photo Previews -->
+            <div v-if="photoPreviewUrls.length > 0" class="photo-preview-grid">
+              <div v-for="(url, index) in photoPreviewUrls" :key="index" class="photo-preview-item">
+                <img :src="url" alt="Preview" class="photo-preview-img" />
+                <button @click="removePhoto(index)" class="remove-photo-btn">×</button>
+              </div>
+            </div>
+          </div>
+          
           <button 
             type="submit"
             :disabled="isSubmitting"
@@ -139,8 +180,10 @@ const data = ref<DiaryData | null>(null)
 const current_user = ref<any>(null)
 const newDiary = ref({
   title: '',
-  content: ''
+  content: '',
+  photos: [] as File[]
 })
+const photoPreviewUrls = ref<string[]>([])
 const isSubmitting = ref(false)
 const selectedDiary = ref<any>(null)
 const selectedAuthor = ref('')
@@ -206,7 +249,8 @@ const submitDiary = async () => {
       // Create new diary
       await diaryApi.createDiary({
         title: newDiary.value.title,
-        content: newDiary.value.content
+        content: newDiary.value.content,
+        photos: newDiary.value.photos
       })
     }
     
@@ -214,7 +258,8 @@ const submitDiary = async () => {
     await loadDiaryData()
     
     // Reset form and go back to list
-    newDiary.value = { title: '', content: '' }
+    newDiary.value = { title: '', content: '', photos: [] }
+    photoPreviewUrls.value = []
     showWriteForm.value = false
     isEditing.value = false
     editingDiaryId.value = null
@@ -243,7 +288,8 @@ const cancelEdit = () => {
   if (isEditing.value) {
     isEditing.value = false
     editingDiaryId.value = null
-    newDiary.value = { title: '', content: '' }
+    newDiary.value = { title: '', content: '', photos: [] }
+    photoPreviewUrls.value = []
   } else {
     showWriteForm.value = false
   }
@@ -260,9 +306,48 @@ watch(() => props.isOpen, (newVal) => {
     showWriteForm.value = false
     isEditing.value = false
     editingDiaryId.value = null
-    newDiary.value = { title: '', content: '' }
+    newDiary.value = { title: '', content: '', photos: [] }
+    photoPreviewUrls.value = []
   }
 })
+
+const handlePhotoSelect = (event: Event) => {
+  const input = event.target as HTMLInputElement
+  if (!input.files) return
+  
+  const files = Array.from(input.files)
+  const remainingSlots = 5 - newDiary.value.photos.length
+  
+  if (remainingSlots <= 0) {
+    alert('최대 5장까지만 첨부 가능합니다.')
+    return
+  }
+  
+  const filesToAdd = files.slice(0, remainingSlots)
+  
+  filesToAdd.forEach(file => {
+    newDiary.value.photos.push(file)
+    
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      photoPreviewUrls.value.push(e.target?.result as string)
+    }
+    reader.readAsDataURL(file)
+  })
+  
+  // Reset input
+  input.value = ''
+}
+
+const removePhoto = (index: number) => {
+  newDiary.value.photos.splice(index, 1)
+  photoPreviewUrls.value.splice(index, 1)
+}
+
+const openPhotoModal = (url: string) => {
+  // Simple photo viewer - open in new tab for now
+  window.open(url, '_blank')
+}
 </script>
 
 <style scoped>
@@ -585,5 +670,113 @@ watch(() => props.isOpen, (newVal) => {
   .diary-full-title {
     font-size: 2rem;
   }
+}
+
+/* Photo Upload Styles */
+.photo-upload-section {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.photo-upload-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.photo-upload-label:hover {
+  border-color: #6b7280;
+  background: #f9fafb;
+}
+
+.upload-icon {
+  width: 24px;
+  height: 24px;
+  color: #6b7280;
+}
+
+.hidden-input {
+  display: none;
+}
+
+.photo-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.photo-preview-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.photo-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-photo-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.remove-photo-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(1.1);
+}
+
+/* Diary Photos Display */
+.diary-photos {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.diary-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.diary-photo {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.diary-photo:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 </style>

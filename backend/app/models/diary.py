@@ -15,3 +15,4 @@ class Diary(Base):
     is_read_by_partner = Column(Boolean, default=False)
     
     author = relationship("User", back_populates="diaries")
+    photos = relationship("DiaryPhoto", back_populates="diary", cascade="all, delete-orphan")

@@ -1,9 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from datetime import datetime, timedelta
+import uuid
+import os
 from app.db.database import get_db
 from app.models.diary import Diary as DiaryModel
+from app.models.diary_photo import DiaryPhoto
 from app.models.user import User
 from app.schemas.diary import DiaryCreate, Diary, DiaryUpdate
 from app.api.deps import get_current_user
@@ -12,8 +15,10 @@ from app.services.push_notification import send_push_notification
 router = APIRouter()
 
 @router.post("/", response_model=Diary)
-def create_diary(
-    diary: DiaryCreate,
+async def create_diary(
+    title: str = Form(...),
+    content: str = Form(...),
+    photos: Optional[List[UploadFile]] = File(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -50,13 +55,17 @@ def create_diary(
         )
     
     db_diary = DiaryModel(
-        title=diary.title,
-        content=diary.content,
+        title=title,
+        content=content,
         author_id=current_user.id
     )
     db.add(db_diary)
     db.commit()
     db.refresh(db_diary)
+    
+    # Handle photo uploads if provided
+    if photos:
+        await _handle_diary_photos(db, db_diary.id, photos, current_user)
     
     # Send push notification to partner if they exist and have push subscription
     if current_user.partner_id:
@@ -256,4 +265,72 @@ def update_diary(
     db.refresh(diary)
     
     return diary
+
+async def _handle_diary_photos(
+    db: Session,
+    diary_id: int,
+    photos: List[UploadFile],
+    current_user: User
+):
+    """Handle photo uploads for diary"""
+    # Import here to avoid circular dependency
+    from app.api.photos import get_supabase_client
+    
+    # Get couple ID for folder organization
+    couple_id = f"{min(current_user.id, current_user.partner_id or current_user.id)}_{max(current_user.id, current_user.partner_id or current_user.id)}"
+    date_str = datetime.utcnow().strftime("%Y-%m-%d")
+    
+    for photo in photos:
+        if not photo or photo.filename == "":
+            continue
+            
+        # Generate unique filename
+        file_extension = photo.filename.split('.')[-1] if '.' in photo.filename else 'jpg'
+        unique_filename = f"{diary_id}_{uuid.uuid4()}.{file_extension}"
+        
+        # Try Supabase first
+        try:
+            supabase = get_supabase_client()
+            if supabase:
+                file_path = f"diaries/{couple_id}/{date_str}/{unique_filename}"
+                file_content = await photo.read()
+                
+                response = supabase.storage.from_("photos").upload(
+                    file_path,
+                    file_content,
+                    file_options={"content-type": photo.content_type or "image/jpeg"}
+                )
+                
+                public_url = supabase.storage.from_("photos").get_public_url(file_path)
+                photo_url = public_url
+            else:
+                raise Exception("Supabase not available")
+                
+        except Exception as e:
+            # Fallback to local storage
+            print(f"Supabase upload failed, using local storage: {e}")
+            
+            # Create local directory
+            local_dir = f"uploads/diaries/{couple_id}/{date_str}"
+            os.makedirs(local_dir, exist_ok=True)
+            
+            # Save file locally
+            file_path = f"{local_dir}/{unique_filename}"
+            file_content = await photo.read() if photo.size > 0 else await photo.read()
+            with open(file_path, "wb") as f:
+                f.write(file_content)
+            
+            # Generate local URL
+            base_url = os.getenv("BASE_URL", "http://localhost:8000")
+            photo_url = f"{base_url}/{file_path}"
+        
+        # Save photo record to database
+        db_photo = DiaryPhoto(
+            diary_id=diary_id,
+            photo_url=photo_url,
+            original_filename=photo.filename
+        )
+        db.add(db_photo)
+    
+    db.commit()
 
