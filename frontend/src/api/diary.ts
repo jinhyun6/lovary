@@ -26,22 +26,26 @@ export interface Diary {
 
 export const diaryApi = {
   async createDiary(data: DiaryCreate): Promise<Diary> {
-    const formData = new FormData()
-    formData.append('title', data.title)
-    formData.append('content', data.content)
-    
-    if (data.photos) {
+    // If there are photos, use FormData; otherwise use JSON
+    if (data.photos && data.photos.length > 0) {
+      const formData = new FormData()
+      formData.append('title', data.title)
+      formData.append('content', data.content)
+      
       data.photos.forEach(photo => {
         formData.append('photos', photo)
       })
+      
+      const response = await apiClient.post<Diary>('/api/diary/with-photos', formData)
+      return response.data
+    } else {
+      // No photos, send as JSON
+      const response = await apiClient.post<Diary>('/api/diary/', {
+        title: data.title,
+        content: data.content
+      })
+      return response.data
     }
-    
-    const response = await apiClient.post<Diary>('/api/diary/', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-    return response.data
   },
 
   async updateDiary(diaryId: number, data: DiaryCreate): Promise<Diary> {

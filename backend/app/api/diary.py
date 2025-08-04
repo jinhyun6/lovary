@@ -14,13 +14,45 @@ from app.services.push_notification import send_push_notification
 
 router = APIRouter()
 
+# Separate endpoints for JSON and multipart/form-data
 @router.post("/", response_model=Diary)
 async def create_diary(
+    diary: DiaryCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Create diary without photos (JSON)"""
+    return await _create_diary_internal(
+        title=diary.title,
+        content=diary.content,
+        photos=None,
+        db=db,
+        current_user=current_user
+    )
+
+@router.post("/with-photos", response_model=Diary)
+async def create_diary_with_photos(
     title: str = Form(...),
     content: str = Form(...),
     photos: Optional[List[UploadFile]] = File(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
+):
+    """Create diary with photos (multipart/form-data)"""
+    return await _create_diary_internal(
+        title=title,
+        content=content,
+        photos=photos,
+        db=db,
+        current_user=current_user
+    )
+
+async def _create_diary_internal(
+    title: str,
+    content: str,
+    photos: Optional[List[UploadFile]],
+    db: Session,
+    current_user: User
 ):
     now = datetime.utcnow()
     today = now.date()
