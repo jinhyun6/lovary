@@ -7,15 +7,7 @@ import os
 app = FastAPI(title="Lovary API")
 
 # CORS 설정 - 로컬과 프로덕션 URL 모두 포함
-cors_origins = ["http://localhost:5173"]
-
-# 프로덕션 프론트엔드 URL 추가 (환경변수)
-frontend_url = os.getenv("FRONTEND_URL", "").strip().rstrip('/')
-if frontend_url:
-    cors_origins.append(frontend_url)
-
-# Log CORS origins for debugging
-print(f"CORS origins: {cors_origins}")
+cors_origins = ["http://localhost:5173", "https://lovary.vercel.app"]
 
 app.add_middleware(
     CORSMiddleware,
