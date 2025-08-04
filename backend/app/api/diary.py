@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime, timedelta
@@ -32,21 +32,28 @@ async def create_diary(
 
 @router.post("/with-photos", response_model=Diary)
 async def create_diary_with_photos(
-    title: str = Form(...),
-    content: str = Form(...),
+    title: Optional[str] = Form(None),
+    content: Optional[str] = Form(None),
     photos: Optional[List[UploadFile]] = File(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     """Create diary with photos (multipart/form-data)"""
-    print(f"DEBUG: Received diary with photos - title: {title}, content length: {len(content) if content else 0}")
+    print(f"DEBUG: Received form data - title: {title}, content: {content[:50] if content else None}")
     print(f"DEBUG: Photos: {[p.filename for p in photos] if photos else 'No photos'}")
     
+    if not title or not content:
+        raise HTTPException(
+            status_code=422,
+            detail="Title and content are required"
+        )
+    
     try:
+    
         return await _create_diary_internal(
             title=title,
             content=content,
-            photos=photos,
+            photos=photos if photos else None,
             db=db,
             current_user=current_user
         )
