@@ -304,14 +304,14 @@ watch(() => props.photoUrl, () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
+  background: #e8e8e8;
 }
 
-/* Image wrapper to ensure white background */
+/* Image wrapper to match image background */
 .image-wrapper {
   width: 85%;
   height: 85%;
-  background: #ffffff;
+  background: #e8e8e8;
   display: flex;
   align-items: center;
   justify-content: center;
