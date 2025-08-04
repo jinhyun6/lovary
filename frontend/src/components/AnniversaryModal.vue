@@ -216,8 +216,8 @@ watch(() => props.isOpen, (newVal) => {
 
 .anniversary-input:focus {
   outline: none;
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  border-color: #6b7280;
+  box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1);
 }
 
 .button-group {
@@ -227,7 +227,7 @@ watch(() => props.isOpen, (newVal) => {
 }
 
 .save-button {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -240,7 +240,7 @@ watch(() => props.isOpen, (newVal) => {
 
 .save-button:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
 }
 
 .save-button:disabled {

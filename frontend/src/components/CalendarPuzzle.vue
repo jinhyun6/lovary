@@ -301,7 +301,7 @@ watch(() => props.photoUrl, () => {
   justify-content: center;
   font-size: 12px;
   font-weight: 500;
-  color: #8b5cf6;
+  color: #6b7280;
   text-align: center;
   padding: 4px;
   z-index: 10;
@@ -388,19 +388,19 @@ watch(() => props.photoUrl, () => {
   content: '';
   position: absolute;
   inset: -2px;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
   border-radius: inherit;
   z-index: -1;
-  opacity: 0.8;
+  opacity: 0.6;
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @keyframes pulse {
   0%, 100% {
-    opacity: 0.8;
+    opacity: 0.6;
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.3;
   }
 }
 
