@@ -32,23 +32,23 @@
           {{ cell.anniversary }}
         </div>
         
-        <!-- Puzzle view -->
-        <div v-if="cell.isValid" class="puzzle-piece">
+        <!-- Puzzle view for both valid and empty cells -->
+        <div class="puzzle-piece">
           <!-- Future dates - show image full size -->
-          <div v-if="cell.status === 'future'" class="puzzle-back">
+          <div v-if="cell.isValid && cell.status === 'future'" class="puzzle-back">
             <div class="image-wrapper">
               <img src="/heart-music-icon.png" alt="" class="heart-music-icon" />
             </div>
           </div>
           
-          <!-- Past/Today dates - photo piece -->
+          <!-- Past/Today dates OR empty cells that should show photo -->
           <div 
-            v-else 
+            v-else-if="(cell.isValid && cell.status !== 'future') || (!cell.isValid && cell.showPhoto)" 
             class="photo-piece"
-            :class="{ 'incomplete': !cell.isComplete }"
+            :class="{ 'incomplete': cell.isValid && !cell.isComplete }"
             :style="getPhotoStyle(cell)"
           >
-            <div v-if="!cell.isComplete" class="incomplete-overlay"></div>
+            <div v-if="cell.isValid && !cell.isComplete" class="incomplete-overlay"></div>
           </div>
         </div>
       </div>
@@ -70,6 +70,7 @@ interface CalendarCell {
   isToday: boolean
   date?: string
   anniversary?: string
+  showPhoto?: boolean
 }
 
 const props = defineProps<{
@@ -95,6 +96,15 @@ const calendarCells = computed(() => {
   // Calculate exact number of rows needed
   const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7
   
+  // Check if all days in the month have completed diaries
+  const completedDays = Object.values(monthData.value).filter((day: any) => 
+    day.is_complete === true && day.status !== 'future'
+  ).length
+  const pastDays = Object.values(monthData.value).filter((day: any) => 
+    day.status === 'past' || day.status === 'today'
+  ).length
+  const isMonthComplete = pastDays > 0 && completedDays === pastDays
+  
   let dayCounter = 1
   
   for (let i = 0; i < totalCells; i++) {
@@ -117,6 +127,11 @@ const calendarCells = computed(() => {
       })
       dayCounter++
     } else {
+      // Empty cells:
+      // - Before first day: always show photo
+      // - After last day: show photo only if month is complete
+      const showPhoto = i < firstDay || (i >= firstDay + daysInMonth && isMonthComplete)
+      
       cells.push({
         row,
         col,
@@ -124,7 +139,8 @@ const calendarCells = computed(() => {
         isValid: false,
         status: null,
         isComplete: false,
-        isToday: false
+        isToday: false,
+        showPhoto
       })
     }
   }
@@ -133,10 +149,13 @@ const calendarCells = computed(() => {
 })
 
 const getPhotoStyle = (cell: CalendarCell) => {
-  if (!props.photoUrl || !cell.isValid) return {}
+  if (!props.photoUrl) return {}
   
-  // Only apply photo style to past/today cells, not future cells
-  if (cell.status === 'future') return {}
+  // Apply photo style to:
+  // 1. Valid cells that are past/today
+  // 2. Empty cells that should show photo
+  if (cell.isValid && cell.status === 'future') return {}
+  if (!cell.isValid && !cell.showPhoto) return {}
   
   // The cropped image is 700x600 (7:6 ratio)
   // We scale it up 7x horizontally and 6x vertically so each cell shows 1/7 x 1/6
