@@ -305,11 +305,11 @@ watch(() => props.photoUrl, () => {
   background: #ffffff;
 }
 
-/* Heart music icon image - full size */
+/* Heart music icon image - 85% size with no effects */
 .heart-music-icon {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
 }
 
 .photo-piece {
