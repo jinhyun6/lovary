@@ -403,8 +403,8 @@ watch(() => props.isOpen, (newVal) => {
 
 .diary-title-card:hover,
 .diary-action-card:hover {
-  border-color: #6366f1;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+  border-color: #6b7280;
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.1);
   transform: translateY(-1px);
 }
 
@@ -417,7 +417,7 @@ watch(() => props.isOpen, (newVal) => {
 
 .diary-action-text {
   font-size: 1.125rem;
-  color: #6366f1;
+  color: #4b5563;
   font-weight: 500;
 }
 
@@ -524,8 +524,8 @@ watch(() => props.isOpen, (newVal) => {
 .diary-input:focus,
 .diary-textarea:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: #6b7280;
+  box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1);
 }
 
 .diary-textarea {
