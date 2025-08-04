@@ -247,6 +247,10 @@ const submitDiary = async () => {
       })
     } else {
       // Create new diary
+      console.log('Creating diary with photos:', newDiary.value.photos)
+      console.log('Photos length:', newDiary.value.photos.length)
+      console.log('Photos type:', newDiary.value.photos.map(p => p.constructor.name))
+      
       await diaryApi.createDiary({
         title: newDiary.value.title,
         content: newDiary.value.content,
@@ -267,7 +271,11 @@ const submitDiary = async () => {
     
     emit('diarySubmitted')
   } catch (error: any) {
-    alert(error.response?.data?.detail || '일기 저장에 실패했습니다.')
+    console.error('Diary submission error:', error.response?.data)
+    const errorMessage = error.response?.data?.detail || 
+                        JSON.stringify(error.response?.data) || 
+                        '일기 저장에 실패했습니다.'
+    alert(errorMessage)
   } finally {
     isSubmitting.value = false
   }

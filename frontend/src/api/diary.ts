@@ -26,13 +26,19 @@ export interface Diary {
 
 export const diaryApi = {
   async createDiary(data: DiaryCreate): Promise<Diary> {
+    console.log('diaryApi.createDiary called with:', data)
+    console.log('Photos provided:', data.photos)
+    console.log('Photos length:', data.photos?.length)
+    
     // If there are photos, use FormData; otherwise use JSON
     if (data.photos && data.photos.length > 0) {
+      console.log('Using FormData for photos')
       const formData = new FormData()
       formData.append('title', data.title)
       formData.append('content', data.content)
       
       data.photos.forEach(photo => {
+        console.log('Appending photo:', photo.name, photo.size)
         formData.append('photos', photo)
       })
       

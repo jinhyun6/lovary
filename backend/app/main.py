@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from app.api import auth, diary, users, photos, anniversary
 from app.core.config import settings
 import os
@@ -17,6 +18,24 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"],
 )
+
+@app.exception_handler(422)
+async def validation_exception_handler(request: Request, exc):
+    """Log 422 errors for debugging"""
+    print(f"422 Error - Path: {request.url.path}")
+    print(f"422 Error - Method: {request.method}")
+    print(f"422 Error - Headers: {dict(request.headers)}")
+    if request.method == "POST":
+        try:
+            body = await request.body()
+            print(f"422 Error - Body: {body[:500] if body else 'No body'}")  # First 500 chars
+        except:
+            pass
+    print(f"422 Error - Exception: {exc}")
+    return JSONResponse(
+        status_code=422,
+        content={"detail": str(exc)}
+    )
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(diary.router, prefix="/api/diary", tags=["diary"])

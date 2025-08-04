@@ -39,13 +39,22 @@ async def create_diary_with_photos(
     current_user: User = Depends(get_current_user)
 ):
     """Create diary with photos (multipart/form-data)"""
-    return await _create_diary_internal(
-        title=title,
-        content=content,
-        photos=photos,
-        db=db,
-        current_user=current_user
-    )
+    print(f"DEBUG: Received diary with photos - title: {title}, content length: {len(content) if content else 0}")
+    print(f"DEBUG: Photos: {[p.filename for p in photos] if photos else 'No photos'}")
+    
+    try:
+        return await _create_diary_internal(
+            title=title,
+            content=content,
+            photos=photos,
+            db=db,
+            current_user=current_user
+        )
+    except Exception as e:
+        print(f"ERROR in create_diary_with_photos: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise
 
 async def _create_diary_internal(
     title: str,
