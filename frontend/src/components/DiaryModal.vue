@@ -278,8 +278,10 @@ const startEdit = () => {
   
   newDiary.value = {
     title: selectedDiary.value.title,
-    content: selectedDiary.value.content
+    content: selectedDiary.value.content,
+    photos: []
   }
+  photoPreviewUrls.value = []
   editingDiaryId.value = selectedDiary.value.id
   isEditing.value = true
 }
