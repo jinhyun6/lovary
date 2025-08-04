@@ -34,11 +34,9 @@
         
         <!-- Puzzle view -->
         <div v-if="cell.isValid" class="puzzle-piece">
-          <!-- Future dates - minimalist pattern -->
+          <!-- Future dates - show image full size -->
           <div v-if="cell.status === 'future'" class="puzzle-back">
-            <div class="future-pattern">
-              <img src="/heart-music-icon.png" alt="" class="heart-music-icon" />
-            </div>
+            <img src="/heart-music-icon.png" alt="" class="heart-music-icon" />
           </div>
           
           <!-- Past/Today dates - photo piece -->
@@ -300,27 +298,18 @@ watch(() => props.photoUrl, () => {
 .puzzle-back {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #fde4e4 0%, #e9d5ff 100%);
   position: relative;
   overflow: hidden;
-}
-
-.future-pattern {
-  width: 100%;
-  height: 100%;
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Heart music icon image */
+/* Heart music icon image - full size */
 .heart-music-icon {
-  width: 60%;
-  height: 60%;
-  object-fit: contain;
-  opacity: 0.85;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .photo-piece {
