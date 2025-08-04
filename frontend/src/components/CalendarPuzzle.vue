@@ -259,7 +259,6 @@ watch(() => props.photoUrl, () => {
 
 .valid-cell:hover {
   transform: scale(0.98);
-  box-shadow: 0 0 0 2px #e5e7eb inset;
 }
 
 .date-number {
@@ -303,6 +302,7 @@ watch(() => props.photoUrl, () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #ffffff;
 }
 
 /* Heart music icon image - full size */
