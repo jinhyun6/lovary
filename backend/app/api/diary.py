@@ -34,7 +34,7 @@ async def create_diary(
 async def create_diary_with_photos(
     title: Optional[str] = Form(None),
     content: Optional[str] = Form(None),
-    photos: Optional[List[UploadFile]] = File(None),
+    photos: List[UploadFile] = File([]),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -112,7 +112,7 @@ async def _create_diary_internal(
     db.refresh(db_diary)
     
     # Handle photo uploads if provided
-    if photos:
+    if photos and len(photos) > 0:
         await _handle_diary_photos(db, db_diary.id, photos, current_user)
     
     # Send push notification to partner if they exist and have push subscription
@@ -329,7 +329,7 @@ async def _handle_diary_photos(
     date_str = datetime.utcnow().strftime("%Y-%m-%d")
     
     for photo in photos:
-        if not photo or photo.filename == "":
+        if not photo or not photo.filename or photo.filename == "":
             continue
             
         # Generate unique filename
