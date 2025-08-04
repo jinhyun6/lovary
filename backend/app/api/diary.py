@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 from datetime import datetime, timedelta
 import uuid
@@ -133,7 +133,9 @@ def get_my_diaries(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    diaries = db.query(DiaryModel).filter(
+    diaries = db.query(DiaryModel).options(
+        joinedload(DiaryModel.photos)
+    ).filter(
         DiaryModel.author_id == current_user.id
     ).order_by(DiaryModel.created_at.desc()).all()
     return diaries
@@ -244,8 +246,10 @@ def get_day_diaries(
     date = datetime(year, month, day).date()
     next_date = date + timedelta(days=1)
     
-    # Get my diary
-    my_diary = db.query(DiaryModel).filter(
+    # Get my diary with photos
+    my_diary = db.query(DiaryModel).options(
+        joinedload(DiaryModel.photos)
+    ).filter(
         DiaryModel.author_id == current_user.id,
         DiaryModel.created_at >= date,
         DiaryModel.created_at < next_date
@@ -258,7 +262,9 @@ def get_day_diaries(
         partner = db.query(User).filter(User.id == current_user.partner_id).first()
         partner_name = partner.name if partner else None
         
-        partner_diary = db.query(DiaryModel).filter(
+        partner_diary = db.query(DiaryModel).options(
+            joinedload(DiaryModel.photos)
+        ).filter(
             DiaryModel.author_id == current_user.partner_id,
             DiaryModel.created_at >= date,
             DiaryModel.created_at < next_date

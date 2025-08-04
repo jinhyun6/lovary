@@ -217,12 +217,17 @@ const loadDiaryData = async () => {
       props.date.month,
       props.date.day
     )
+    console.log('Loaded diary data:', data.value)
+    console.log('My diary:', data.value?.my_diary)
+    console.log('My diary photos:', data.value?.my_diary?.photos)
   } catch (error) {
     console.error('Failed to load diary data:', error)
   }
 }
 
 const openDiary = (type: 'my' | 'partner', diary: any) => {
+  console.log('Opening diary:', diary)
+  console.log('Diary photos:', diary?.photos)
   selectedDiary.value = diary
   selectedAuthor.value = type === 'my' ? (data.value?.my_name || '나') : (data.value?.partner_name || '상대방')
 }
