@@ -36,7 +36,9 @@
         <div v-if="cell.isValid" class="puzzle-piece">
           <!-- Future dates - show image full size -->
           <div v-if="cell.status === 'future'" class="puzzle-back">
-            <img src="/heart-music-icon.png" alt="" class="heart-music-icon" />
+            <div class="image-wrapper">
+              <img src="/heart-music-icon.png" alt="" class="heart-music-icon" />
+            </div>
           </div>
           
           <!-- Past/Today dates - photo piece -->
@@ -305,11 +307,23 @@ watch(() => props.photoUrl, () => {
   background: #ffffff;
 }
 
-/* Heart music icon image - 85% size with no effects */
-.heart-music-icon {
+/* Image wrapper to ensure white background */
+.image-wrapper {
   width: 85%;
   height: 85%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+/* Heart music icon image - no effects */
+.heart-music-icon {
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  display: block;
 }
 
 .photo-piece {
